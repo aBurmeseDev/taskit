@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar'
-import React from 'react'
+import React, { useState } from 'react'
 import {
   StyleSheet,
   Text,
@@ -8,10 +8,19 @@ import {
   Platform,
   TextInput,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native'
 import Task from './components/Task'
 
 export default function App() {
+  const [task, setTask] = useState()
+  const [taskItems, setTaskItems] = useState([])
+
+  const handleAddTask = () => {
+    Keyboard.dismiss()
+    setTaskItems([...taskItems, task])
+    setTask(null)
+  }
   return (
     <View style={styles.container}>
       {/* Today's Tasks */}
@@ -21,6 +30,9 @@ export default function App() {
 
       <View style={styles.items}>
         {/* This is where the tasks will go */}
+        {taskItems.map((item, index) => {
+          return <Task key={index} text={item} />
+        })}
         <Task text={'Task 1'} />
         <Task text={'Task 2'} />
         <Task text={'Task 3'} />
@@ -35,9 +47,11 @@ export default function App() {
         <TextInput
           style={styles.input}
           placeholder={'Write a task'}
+          value={task}
+          onChangeText={(text) => setTask(text)}
         ></TextInput>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => handleAddTask()}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
           </View>
